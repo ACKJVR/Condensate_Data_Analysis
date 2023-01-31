@@ -1,3 +1,5 @@
+import numpy as np
+
 class experimental_segment():
     def __init__(self,file) -> None:
         self.parameter_dict = {}
@@ -12,7 +14,7 @@ class experimental_segment():
 
         if self.parameter_dict["delta pressure"] > 0:
             self.sign = "pos"
-        else: 
+        else:
             self.sign = "neg"
 
     def __import_header__(self,file):
