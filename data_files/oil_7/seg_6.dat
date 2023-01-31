@@ -1,0 +1,38 @@
+# file name
+# oil-aspiration/102122-1.xlsx
+# pressure
+# -1980.0
+# delta pressure
+# -2153.9
+# huan comment
+# High Viscosity oil aspiration Air pipette, but ethanol is already in it
+# state
+# nonwetting
+# pipette fill
+# ethanol
+# solvent
+# ethanol
+# lubricating ethanol
+# false
+186.00,0.026
+186.50,0.542
+187.00,0.800
+187.50,1.032
+188.00,1.238
+188.50,1.496
+189.00,1.729
+189.50,1.961
+190.00,2.193
+190.50,2.451
+191.00,2.683
+191.50,2.941
+192.00,3.122
+192.50,3.328
+193.00,3.535
+193.50,3.715
+194.00,3.896
+194.50,4.102
+195.00,4.283
+195.50,4.489
+196.00,4.696
+196.50,4.902
