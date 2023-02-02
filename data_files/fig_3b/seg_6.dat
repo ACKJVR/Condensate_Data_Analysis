@@ -1,5 +1,5 @@
 # file name
-# Figure_3b_data.xlsx
+# excel_files/Figure_3b_data.xlsx
 # pressure
 # -25.0
 # delta pressure
@@ -8,15 +8,6 @@
 # RGG
 # state
 # wetting
-281,9.320
-282,9.081
-283,9.001
-284,8.842
-285,8.762
-286,8.842
-287,8.922
-288,8.842
-289,8.922
 290,9.081
 291,9.320
 292,9.559
