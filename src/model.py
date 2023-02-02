@@ -12,9 +12,10 @@ class Model(ABC):
         self.L0 = seg.L0
         self.seg = seg
         self.params = False
+        self.bound = spo.Bounds(lb=-np.inf,ub=np.inf)
 
     def fit(self):
-        (self.params, self.covar) = spo.curve_fit(self.model,self.seg.time_data,self.seg.x_data)
+        (self.params, self.covar) = spo.curve_fit(self.model,self.seg.time_data,self.seg.x_data,bounds=self.bound)
         
     def error(self,k,time,data):
         return np.sum((data-self.model(time,k))**2)
@@ -33,6 +34,10 @@ class Model(ABC):
 
 class wetting_model(Model):
     def model(self,t,A):
+        if self.seg.sign=="pos":
+            self.bound = spo.Bounds(lb=0,ub=np.inf)
+        elif self.seg.sign=="neg":
+            self.bound =spo.Bounds(lb=-np.inf,ub=0)
         return np.sqrt(A*(t-self.t0) + np.power(self.L0,2))
         
 class wetting_model_modified(Model):
