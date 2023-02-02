@@ -26,7 +26,7 @@ class Model(ABC):
         if not self.params:
             self.fit()
         
-        fig,ax = plt.subplots()
+        _,ax = plt.subplots()
         ax.scatter(self.seg.time_data,self.seg.x_data)
         ax.plot(self.seg.time_data,self.model(self.seg.time_data,*self.params),'r')
         plt.show()
