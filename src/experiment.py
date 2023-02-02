@@ -3,12 +3,13 @@ from matplotlib import pyplot as plt
 import matplotlib as mpl
 import natsort
 from src import exp_segment
-
+from scipy import stats
 
 class experiment():
     def __init__(self,dir): 
         seg_files = [file for file in dir.iterdir()]
         seg_files = natsort.natsorted(seg_files)
+        self.seg_num = len(seg_files)
 
         self.data_dict = {"pos":[],"neg":[]}
 
@@ -36,7 +37,7 @@ class experiment():
                 seg_model.fit()
     
     def plot_experiment(self,include_model=True,exp_direction="pos"):
-        fig,ax = plt.subplots()
+        _,ax = plt.subplots()
         self.color_dict = {}
         for key in self.data_dict.keys():
             self.color_dict[key] = mpl.cm.plasma(np.linspace(0, 1, len(self.data_dict[key])))
@@ -65,3 +66,23 @@ class experiment():
             return 0
         for seg_model,color in zip(self.model_dict[key],colors):
             ax.plot(seg_model.seg.time_data-seg_model.t0,seg_model.model(seg_model.seg.time_data,*seg_model.params)-seg_model.L0,c=color)
+
+    def fit_pressures(self,plot=False):
+        pressures = []
+        fit_parameter = []
+        for set in self.model_dict.values():
+            for mod in set:
+                fit_vals = mod.return_values()
+                fit_parameter.append(fit_vals["A"])
+                pressures.append(mod.pressure)
+        
+        pressures = np.array(pressures)
+        fit_parameter = np.array(fit_parameter).flatten()
+
+        self.pressure_result = stats.linregress(pressures,fit_parameter)
+
+        if plot:
+            _,ax = plt.subplots()
+            ax.scatter(pressures,fit_parameter,facecolors='none',edgecolor='k')
+            ax.plot(pressures,self.pressure_result.slope*pressures + self.pressure_result.intercept)
+            plt.show()
