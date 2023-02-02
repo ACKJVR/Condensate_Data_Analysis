@@ -12,9 +12,9 @@ class Model(ABC):
         self.L0 = seg.L0
         self.seg = seg
         self.params = False
-        self.bound = spo.Bounds(lb=-np.inf,ub=np.inf)
 
     def fit(self):
+        self.define_bounds()
         (self.params, self.covar) = spo.curve_fit(self.model,self.seg.time_data,self.seg.x_data,bounds=self.bound)
         
     def error(self,k,time,data):
@@ -31,15 +31,28 @@ class Model(ABC):
         ax.scatter(self.seg.time_data,self.seg.x_data)
         ax.plot(self.seg.time_data,self.model(self.seg.time_data,*self.params),'r')
         plt.show()
+    
+    def define_bounds(self):
+        self.bound = (-np.inf,np.inf)
+
+    def return_values(self):
+        pass
 
 class wetting_model(Model):
     def model(self,t,A):
-        if self.seg.sign=="pos":
-            self.bound = spo.Bounds(lb=0,ub=np.inf)
-        elif self.seg.sign=="neg":
-            self.bound =spo.Bounds(lb=-np.inf,ub=0)
         return np.sqrt(A*(t-self.t0) + np.power(self.L0,2))
         
+    def define_bounds(self):
+        if self.seg.sign=="pos":
+            self.bound = (0,np.inf)
+        elif self.seg.sign=="neg":
+            self.bound = (-np.inf,0)
+
+    def return_values(self):
+        if not self.params:
+            self.fit()
+        return {"A":self.params}
+
 class wetting_model_modified(Model):
     def model(self,t,A,C):
         return np.sqrt(A*(t-self.t0) + np.power(self.L0,2)) + C
