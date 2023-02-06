@@ -4,6 +4,7 @@ import matplotlib as mpl
 import natsort
 from src import exp_segment
 from scipy import stats
+import copy
 
 class experiment():
     def __init__(self,dir): 
@@ -18,14 +19,15 @@ class experiment():
             self.data_dict[seg.sign].append(seg)
         
         if self.data_dict["pos"]:
-            self.parameters = self.data_dict["pos"][0].parameter_dict
+            self.parameters = copy.deepcopy(self.data_dict["pos"][0].parameter_dict)
         else:
-             self.parameters = self.data_dict["neg"][0].parameter_dict
+             self.parameters = copy.deepcopy(self.data_dict["neg"][0].parameter_dict)
 
         self.parameters.pop("pressure")
         self.parameters.pop("delta pressure")
 
         self.model_dict = {}
+        self.color_dict = {}
 
     
     def fit_model(self,Model):
@@ -38,27 +40,27 @@ class experiment():
     
     def plot_experiment(self,include_model=True,exp_direction="pos"):
         _,ax = plt.subplots()
-        self.color_dict = {}
-        for key in self.data_dict.keys():
-            self.color_dict[key] = mpl.cm.plasma(np.linspace(0, 1, len(self.data_dict[key])))
-
+        if not self.color_dict:
+            self.define_colors()
         if exp_direction == "pos" or exp_direction == "all":
-            self.__scatter_plot__("pos",ax)
+            self.__scatter_plot__("pos",ax,self.data_dict["pos"])
             if include_model:
-                self.__model_plot__("pos",ax,)
+                self.__model_plot__("pos",ax)
 
         if exp_direction == "neg" or exp_direction == "all":
-            self.__scatter_plot__("neg",ax)
+            self.__scatter_plot__("neg",ax,self.data_dict["neg"])
             if include_model:
-                self.__model_plot__("neg",ax,)
+                self.__model_plot__("neg",ax)
         plt.show()
-    
-    def __scatter_plot__(self,key,ax):
-        colors = self.color_dict[key]
-        for (segment,color) in zip(self.data_dict[key],colors):
-            ax.scatter(segment.time_data-segment.t0,segment.x_data-segment.L0,facecolors='none',edgecolor=color)
-            # ax.scatter(segment.time_data,segment.x_data)
 
+    def define_colors(self):
+        for key in self.data_dict.keys():
+            self.color_dict[key] = mpl.cm.plasma(np.linspace(0, 1, len(self.data_dict[key])))
+    
+    def __scatter_plot__(self,key,ax,data):
+        colors = self.color_dict[key]
+        for (segment,color) in zip(data,colors):
+            ax.scatter(segment.time_data-segment.t0,segment.x_data-segment.L0,facecolors='none',edgecolor=color)
     
     def __model_plot__(self,key,ax):
         colors = self.color_dict[key]
@@ -85,4 +87,19 @@ class experiment():
             _,ax = plt.subplots()
             ax.scatter(pressures,fit_parameter,facecolors='none',edgecolor='k')
             ax.plot(pressures,self.pressure_result.slope*pressures + self.pressure_result.intercept)
+            plt.show()
+
+    def rescale_data(self,plot=False):
+        self.rescaled_segs = {}
+        for key,value in self.model_dict.items():
+            self.rescaled_segs[key] = [mod.rescale_data() for mod in value]
+
+        if plot:
+            if not self.color_dict:
+                self.define_colors()
+            
+            _,ax = plt.subplots()
+            for key in self.rescaled_segs.keys():
+                self.__scatter_plot__(key,ax,self.rescaled_segs[key])
+
             plt.show()

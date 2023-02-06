@@ -1,7 +1,7 @@
 import numpy as np
 
 class experimental_segment():
-    def __init__(self,file) -> None:
+    def __init__(self,file):
         self.parameter_dict = {}
         self.__import_header__(file)
 
