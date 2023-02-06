@@ -31,3 +31,16 @@ class experimental_segment():
                     self.parameter_dict[key]=item
                 else:
                     break
+
+class rescaled_segment():
+    def __init__(self,data,params):
+        self.time_data = data[0]
+        self.x_data = data[1]
+        self.parameter_dict = params
+        self.t0 = self.time_data[0]
+        self.L0 = self.x_data[0]
+        self.pressure = self.parameter_dict["pressure"]
+        if self.parameter_dict["delta pressure"] > 0:
+            self.sign = "pos"
+        else:
+            self.sign = "neg"
