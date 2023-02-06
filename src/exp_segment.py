@@ -39,6 +39,7 @@ class rescaled_segment():
         self.parameter_dict = params
         self.t0 = self.time_data[0]
         self.L0 = self.x_data[0]
+        self.max_extent = max(self.time_data)
         self.pressure = self.parameter_dict["pressure"]
         if self.parameter_dict["delta pressure"] > 0:
             self.sign = "pos"

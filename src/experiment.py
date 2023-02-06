@@ -97,9 +97,15 @@ class experiment():
         if plot:
             if not self.color_dict:
                 self.define_colors()
-            
             _,ax = plt.subplots()
+            max_extent = []
             for key in self.rescaled_segs.keys():
                 self.__scatter_plot__(key,ax,self.rescaled_segs[key])
+                for res_seg in self.rescaled_segs[key]:
+                    max_extent.append(res_seg.max_extent)
+            
+            max_extent = max(max_extent)
+
+            ax.plot(np.linspace(0,max_extent,100),np.linspace(0,max_extent,100))
 
             plt.show()
