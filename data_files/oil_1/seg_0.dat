@@ -3,7 +3,7 @@
 # pressure
 # -723.0
 # delta pressure
-# -3258.0
+# 3258.0
 # huan comment
 # Oil condensate in air, air pipette without filling,  oil wetted both inner and outer wall
 # state
@@ -158,12 +158,4 @@
 50.20,36.090
 50.40,36.199
 50.60,36.308
-50.80,36.416
-51.00,36.525
-51.20,36.579
-51.40,36.579
-51.60,36.552
-51.80,36.497
-52.00,36.443
-52.20,36.416
-52.40,36.389
+
