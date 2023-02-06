@@ -66,8 +66,6 @@ class wetting_model(Model):
         time_data = self.params*(time_data-self.t0)
         return exp_segment.rescaled_segment((time_data,length_data),self.seg.parameter_dict)
 
-
-
 class wetting_model_modified(Model):
     def model(self,t,A,C):
         return np.sqrt(A*(t-self.t0) + np.power(self.L0,2)) + C
