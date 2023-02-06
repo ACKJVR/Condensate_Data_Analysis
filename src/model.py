@@ -2,6 +2,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import scipy.optimize as spo
 from abc import ABC
+from src import exp_segment
 
 # Define abstract base class for all models
 class Model(ABC):
@@ -38,6 +39,10 @@ class Model(ABC):
     def return_values(self):
         pass
 
+    def rescale_data(self):
+        if not self.params:
+            self.fit()
+
 class wetting_model(Model):
     def model(self,t,A):
         return np.sqrt(A*(t-self.t0) + np.power(self.L0,2))
@@ -52,6 +57,16 @@ class wetting_model(Model):
         if not self.params:
             self.fit()
         return {"A":self.params}
+    
+    def rescale_data(self):
+        super().rescale_data()
+        length_data = self.seg.x_data
+        time_data = self.seg.x_data
+        length_data = length_data**2 - self.L0**2
+        time_data = self.params*(time_data-self.t0)
+        return exp_segment.rescaled_segment((time_data,length_data),self.seg.parameter_dict)
+
+
 
 class wetting_model_modified(Model):
     def model(self,t,A,C):
