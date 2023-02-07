@@ -11,12 +11,14 @@ class experiment():
         seg_files = [file for file in dir.iterdir()]
         seg_files = natsort.natsorted(seg_files)
         self.seg_num = len(seg_files)
+        self.dir = dir 
 
         self.data_dict = {"pos":[],"neg":[]}
 
         for file in seg_files:
-            seg = exp_segment.experimental_segment(file)
-            self.data_dict[seg.sign].append(seg)
+            if file.stem[:3]== 'seg':
+                seg = exp_segment.experimental_segment(file)
+                self.data_dict[seg.sign].append(seg)
         
         if self.data_dict["pos"]:
             self.parameters = copy.deepcopy(self.data_dict["pos"][0].parameter_dict)
@@ -29,8 +31,9 @@ class experiment():
         self.model_dict = {}
         self.color_dict = {}
         self.pressure_result = False
+        self.pressures = []
+        self.rescaled_segs = {}
 
-    
     def fit_model(self,Model):
         self.model = Model
         for key,value in self.data_dict.items():
@@ -71,23 +74,23 @@ class experiment():
             ax.plot(seg_model.seg.time_data-seg_model.t0,seg_model.model(seg_model.seg.time_data,*seg_model.params)-seg_model.L0,c=color)
 
     def fit_pressures(self,plot=False):
-        pressures = []
-        fit_parameter = []
+        self.pressures = []
+        self.fit_parameter = []
         for set in self.model_dict.values():
             for mod in set:
                 fit_vals = mod.return_values()
-                fit_parameter.append(fit_vals["A"])
-                pressures.append(mod.pressure)
+                self.fit_parameter.append(fit_vals["A"])
+                self.pressures.append(mod.pressure)
         
-        pressures = np.array(pressures)
-        fit_parameter = np.array(fit_parameter).flatten()
+        self.pressures = np.array(self.pressures)
+        self.fit_parameter = np.array(self.fit_parameter).flatten()
 
-        self.pressure_result = stats.linregress(pressures,fit_parameter)
+        self.pressure_result = stats.linregress(self.pressures,self.fit_parameter)
 
         if plot:
             _,ax = plt.subplots()
-            ax.scatter(pressures,fit_parameter,facecolors='none',edgecolor='k')
-            ax.plot(pressures,self.pressure_result.slope*pressures + self.pressure_result.intercept)
+            ax.scatter(self.pressures,self.fit_parameter,facecolors='none',edgecolor='k')
+            ax.plot(self.pressures,self.pressure_result.slope*self.pressures + self.pressure_result.intercept)
             plt.show()
 
     def rescale_data(self,plot=False):
