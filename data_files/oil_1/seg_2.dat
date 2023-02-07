@@ -1,19 +1,21 @@
 # file name
-# oil-aspiration/092922-1.xlsx
+# excel_files/oil-aspiration/092922-1.xlsx
 # pressure
-# 18046.6
+# -18084.4
 # delta pressure
-# 6494.1
+# 6456.2
 # huan comment
-# Oil condensate in air, air pipette without filling,  oil wetted both inner and outer wall
+# High Viscosity oil aspiration Pipette filled with ethanol
 # state
-# wetting
+# nonwetting
 # pipette fill
-# air
+# ethanol
 # solvent
-# air
+# ethanol
 # lubricating ethanol
 # false
+178.80,0.027
+179.00,0.109
 179.20,0.244
 179.40,0.380
 179.60,0.543
@@ -130,3 +132,6 @@
 201.80,6.377
 202.00,6.404
 202.20,6.431
+202.40,6.458
+202.60,6.485
+202.80,6.513
