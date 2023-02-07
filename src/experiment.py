@@ -28,6 +28,7 @@ class experiment():
 
         self.model_dict = {}
         self.color_dict = {}
+        self.pressure_result = False
 
     
     def fit_model(self,Model):
@@ -90,9 +91,12 @@ class experiment():
             plt.show()
 
     def rescale_data(self,plot=False):
+        if not self.pressure_result:
+            self.fit_pressures()
+        
         self.rescaled_segs = {}
         for key,value in self.model_dict.items():
-            self.rescaled_segs[key] = [mod.rescale_data() for mod in value]
+            self.rescaled_segs[key] = [mod.rescale_data((self.pressure_result.slope,self.pressure_result.intercept)) for mod in value]
 
         if plot:
             if not self.color_dict:
@@ -105,6 +109,8 @@ class experiment():
                     max_extent.append(res_seg.max_extent)
             
             max_extent = max(max_extent)
+            ax.set_xscale('log')
+            ax.set_yscale('log')
 
             ax.plot(np.linspace(0,max_extent,100),np.linspace(0,max_extent,100))
 

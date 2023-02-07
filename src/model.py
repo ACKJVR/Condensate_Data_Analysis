@@ -58,12 +58,14 @@ class wetting_model(Model):
             self.fit()
         return {"A":self.params}
     
-    def rescale_data(self):
+    def rescale_data(self,pressure_data):
         super().rescale_data()
         length_data = self.seg.x_data
         time_data = self.seg.time_data
         length_data = length_data**2 / self.L0**2
-        time_data = self.params*(time_data-self.t0)/self.L0**2
+        pressure_slope = pressure_data[0]
+        pressure_int = pressure_data[1]
+        time_data = (self.pressure*pressure_slope + pressure_int)*(time_data-self.t0)/self.L0**2
         return exp_segment.rescaled_segment((time_data,length_data),self.seg.parameter_dict)
 
 class wetting_model_modified(Model):
