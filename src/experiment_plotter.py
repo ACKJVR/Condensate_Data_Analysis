@@ -17,7 +17,7 @@ class experiment_plotter():
         self.label_coords = [0.07,0.92]
         self.legend_font_size = 12
 
-    def full_plot(self):
+    def full_plot(self,export=False,display=True,path=''):
         fig,axs = plt.subplots(2,2,figsize=(11,7))
         self.full_experiment_plot(axs[0,0])
         self.data_with_model_plot(axs[0,1])
@@ -25,7 +25,16 @@ class experiment_plotter():
         self.rescaled_plot(axs[1,1])
         fig.subplots_adjust(wspace=.7,hspace=.3)
         self.pressure_colorbar(fig)
-        plt.show=()
+        if export:
+            if path:
+                file_name = self.experiment.dir.stem+'_full_plot.png'
+                plt.savefig(path/file_name,bbox_inches='tight')
+            else:
+                print('No path given')
+        if display:
+            plt.show=() 
+        else:
+            plt.close()
 
     def pressure_colorbar(self,fig):
         fig.subplots_adjust(right=0.9)
@@ -48,8 +57,8 @@ class experiment_plotter():
         max_extent = max(max_extent)
         ax.set_xscale('log')
         ax.set_yscale('log')
-        ax.set_xlabel('$\displaystyle \\frac{\Delta P-P_\\gamma}{8 \mu} (t-t_0)$')
-        ax.set_ylabel('$\displaystyle \\left(\\frac{L_p(t)}{L_0}\\right)^2 - 1$')
+        ax.set_xlabel('$\displaystyle \\left| \\frac{\Delta P-P_\\gamma}{8 \mu} (t-t_0) \\right|$')
+        ax.set_ylabel('$\displaystyle \\left| \\left(\\frac{L_p(t)}{L_0}\\right)^2 - 1 \\right|$')
 
         ax.plot(np.linspace(0,max_extent,100),np.linspace(0,max_extent,100),'k')
         legend_elements = [mpl.lines.Line2D([0], [0], color='k', lw=2, label='$\displaystyle y=x$'),
@@ -60,7 +69,7 @@ class experiment_plotter():
             self.pressure_colorbar(fig)
             plt.show()
         else:
-            plt.text(*self.label_coords, '(d)', horizontalalignment='center',verticalalignment='center', transform=ax.transAxes)
+            plt.text(*self.label_coords, '(d)', horizontalalignment='center',verticalalignment='center', transform=ax.transAxes,bbox=dict(boxstyle="square",facecolor='white'))
 
 
     def pressure_fit_plot(self,ax=False):
@@ -98,7 +107,7 @@ class experiment_plotter():
             self.pressure_colorbar(fig)
             plt.show()
         else:
-            plt.text(*self.label_coords, '(a)', horizontalalignment='center',verticalalignment='center', transform=ax.transAxes)
+            plt.text(*self.label_coords, '(a)', horizontalalignment='center',verticalalignment='center', transform=ax.transAxes,bbox=dict(boxstyle="square",facecolor='white',edgecolor='none'))
 
 
     def data_with_model_plot(self,ax=False):
